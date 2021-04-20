@@ -43,6 +43,7 @@ class Video(object):
         statistics = youtube.videos().list(part = 'statistics', 
                         id = self.video_id).\
                             execute()['items'][0]['statistics']
+        print(statistics)
         self.viewCount = statistics['viewCount']
         self.likeCount = statistics['likeCount']
         self.dislikeCount = statistics['dislikeCount']
