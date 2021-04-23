@@ -1,0 +1,56 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Make your recipe{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Find your recipe</title>
+    </head>
+
+    <body>
+        <img 
+            src="static/figures/logo-styles.jpeg"
+            width=500/>
+        <h1>
+            Find your favorite recipe!
+        </h1>
+
+        <form action="/recipes" method="POST" class="form-inline">
+            <div class="form-group">
+                <label for="keywords">Keyword (Required)</label>
+                <input type="keyword" class="form-control" id="Keywords", name="keywords", placeholder="Beef tomato etc.">
+                <label>Cusine Type</label>
+                <select class="form-control", id="cuisineType", name="cuisineType">
+                    <option>American</option>
+                    <option>Asian</option>
+                    <option>British</option>
+                    <option>Caribbean</option>
+                    <option>Central Europe</option>
+                    <option>Chinese</option>
+                    <option>Eastern Europe</option>
+                    <option>French</option>
+                    <option>Indian</option>
+                    <option>Italian</option>
+                    <option>Japanese</option>
+                    <option>Kosher</option>
+                    <option>Mediterranean</option>
+                    <option>Mexican</option>
+                    <option>Middle Eastern</option>
+                    <option>South American</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search Recipe</button>
+        </form>
+        <form action='/history' method='post' class='show-history'>
+            <button type="submit" class="btn btn-primary">Your last 10 search history</button>
+        </form>
+    </body>
+    </html>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Search your recipe video{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Search your recipe video</title>
+    </head>
+
+    <body>
+        <h1>
+            Search Video Results
+        </h1>
+
+        <form action="/" class="return", method="get">
+            <button type="submit" class="btn btn-primary">Return to Top</button>
+        </form>
+
+        <form>
+            <h3>
+                <table border="2", width="1000">
+                    <tr>
+                        <th> Title </th>
+                        <th> Thumbnail </th>
+                    </tr>
+                    {% for video in youtube_results %}
+                    <tr>
+                        <td>
+                            <font size="4">Title: {{video['title']}}<br>
+                            Published: {{video['published']}}<br>
+                            View count: {{video['viewCount']}}<br>
+                            Like count: {{video['likeCount']}}<br>
+                            Comment count: {{video['commentCount']}}<br>
+                            </font>
+                        </td>
+                        <td><img src={{video['image']}} width="250">
+                        <a href="{{video['url']}}" target="_blank" rel="noopener">
+                            <button type="button" class="btn btn-primary">Watch video</button>
+                        </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </h3>
+        </form>
+        
+    </body>
+    </html>
+</div>
+{% endblock %}

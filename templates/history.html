@@ -1,0 +1,65 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Your recipe history{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Your recipe history</title>
+    </head>
+
+    <body>
+        <img 
+            src="static/figures/logo-styles.jpeg"
+            width=500/>
+        <h1>
+            Search History
+        </h1>
+
+        <form action="/" class="return", method="get">
+            <button type="submit" class="btn btn-primary">Return to Top</button>
+        </form>
+
+        <form action="/video_hist" method="post" class="form-inline">
+            <h3>
+                <table border="2", width="1200">
+                    <tr>
+                        <th> Cuisine </th>
+                        <th> Image </th>
+                        <th> Nutrient per day </th>
+                    </tr>
+                    {% for i in range(size) %}
+                    <tr>
+                        <td>
+                            <font size="4">Name: {{history_results[i]['recipe_name']}}<br>
+                            Calories: {{history_results[i]['calories']}} kcal<br>
+                            Ingredients: </font><br>
+                            {% for ingredient in history_results[i]['ingredient']%}
+                                <font size="3"><li>{{ingredient}}</li></font>
+                            {% endfor %}
+                            <input type="hidden" name="recipe_name_{{i}}" value="{{history_results[i]['recipe_name']}}">
+                            <input type="hidden" name="recipe_id_{{i}}" value={{history_results[i]['recipe_id']}}>
+                            <input type="hidden" name="keywords" value="{{keywords}}">
+                            <input type="hidden" name="cuisineType" value={{cuisineType}}>
+                        </td>
+                        <td>
+                            <img src={{history_results[i]['image']}} width="300">
+                            <button type="submit" class="btn btn-primary" name='recipe_no' value="{{i}}">Search video again</button>
+                        </td>
+                        <td>
+                            <img src="static/figures/{{history_results[i]['file_name']}}.png" width="300">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </h3>
+        </form>
+        
+    </body>
+    </html>
+</div>
+{% endblock %}

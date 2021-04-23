@@ -1,13 +1,18 @@
-import requests
 import json
+import requests
+
 from googleapiclient.discovery import build
 import sqlite3
-import hashlib
+from flask import Flask, render_template, request
+from flask_bootstrap import Bootstrap
 
 import secrets
 from recipe import Recipe
 from youtube import Video
 import utils
+
+app = Flask(__name__, static_folder='static')
+bootstrap = Bootstrap(app)
 
 API_ID = secrets.RECIPE_API_ID
 API_KEY = secrets.RECIPE_API_KEY
@@ -21,36 +26,55 @@ CACHE_DICT = {}
 CACHE_YOUTUBE_FILE_NAME = 'cache_youtube.json'
 CACHE_YOUTUBE_DICT = {}
 
-# From user's imput
-params = {"q":"beef", 
-            "cuisineType": "Japanese"}
+@app.route('/', methods=["GET", "POST"])
+def start_app():
+    if request.method == 'GET':
+        utils.save2sqlite()
+    return render_template('index.html')
 
-
-def main():
-
+@app.route('/recipes', methods=["POST"])
+def show_recipes():
+    keywords = request.form.get('keywords')
+    cuisineType = request.form.get('cuisineType')
+    params = {"q": keywords, 
+            "cuisineType": cuisineType}
     recipe_results = utils.make_request_with_cache(params)
-    for i, recipe in enumerate(recipe_results):
-        print(i, Recipe(recipe_result=recipe))
-    print()
+    return render_template('recipes.html', recipe_results=recipe_results,
+                            size=len(recipe_results), 
+                            keywords=keywords, cuisineType=cuisineType)
 
-    # From user's input
-    recipe_id = "1http://www.edamam.com/recipe/soy-glazed-beef-bdb68821a6bc806469bd17f34ca382b9/beef"
-    recipe_name = "Miso Beef Noodle Soup"
-
+@app.route('/video', methods=["POST"])
+def show_youtube_videos():
+    recipe_no = request.form.get('recipe_no')
+    recipe_name = request.form.get(f'recipe_name_{recipe_no}')
+    recipe_id = request.form.get(f'recipe_id_{recipe_no}')
+    keywords = request.form.get('keywords')
+    cuisineType = request.form.get('cuisineType')
     youtube_results = utils.make_youtube_request_with_cache(recipe_name, recipe_id)
-    for i, youtube in enumerate(youtube_results):
-        print(i, Video(result=youtube))
-    print()
-    
-    # utils.save2sqlite(recipe_results, recipe_id, youtube_results)
+    return render_template('video.html', youtube_results=youtube_results, 
+                            recipe_id=recipe_id, 
+                            recipe_name=recipe_name,
+                            keywords=keywords, cuisineType=cuisineType)
 
+@app.route('/history', methods=["GET", "POST"])
+def show_recipe_history():
+    history_results = utils.make_history()
+    return render_template('history.html', history_results=history_results,
+                                size=len(history_results))
+
+@app.route('/video_hist', methods=["POST"])
+def show_video_history():
+    recipe_no = request.form.get('recipe_no')
+    recipe_name = request.form.get(f'recipe_name_{recipe_no}')
+    recipe_id = request.form.get(f'recipe_id_{recipe_no}')
+    keywords = request.form.get('keywords')
+    cuisineType = request.form.get('cuisineType')
+    youtube_results = utils.make_youtube_request_with_cache(recipe_name, recipe_id)
+    return render_template('video_hist.html', youtube_results=youtube_results, 
+                            recipe_id=recipe_id, 
+                            recipe_name=recipe_name,
+                            keywords=keywords, cuisineType=cuisineType)
 
 if __name__ == '__main__':
 
-    CACHE_DICT = utils.load_cache(source='recipe')
-    CACHE_YOUTUBE_DICT = utils.load_cache(source='youtube')
-
-    main()
-
-    utils.save_cache(CACHE_DICT, source='recipe')
-    utils.save_cache(CACHE_YOUTUBE_DICT, source='youtube')
+    app.run(debug=True)

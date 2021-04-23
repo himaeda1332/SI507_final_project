@@ -1,6 +1,5 @@
 __pycache__
 .DS_Store
-sample*
 secrets.py
 cache*
 *.sqlite
