@@ -5,8 +5,30 @@ API_YOUTUBE_KEY = secrets.YOUTUBE_API_KEY
 youtube = build('youtube', 'v3', developerKey=API_YOUTUBE_KEY)
 
 class Video(object):
-    '''
-    TODO String
+    '''a youtube video object
+    This instance can be made from several type
+    Class Attributes
+    ----------------
+    video_id: string
+        the video id: unique
+    channel_title: string
+        the channel title which the video is included
+    published: string
+        published date
+    channel_id: string
+        the channel id
+    viewCount: integer
+        the number of viewing
+    likeCount: integer
+        the number of like
+    dislikeCount: integer
+        the number of dislike
+    commentCount: integer
+        the number of comments
+    image: string
+        the thumbnail file name
+    url: string
+        the video url to open in the browser
     '''
     def __init__(self, json=None, result=None):
         if json:
@@ -30,7 +52,7 @@ class Video(object):
             self.commentCount = result['commentCount']
             self.image = result['image']
             self.url = result['url']
-            
+
         else:
             self.video_id = 'no_id'
             self.channel_title = 'no title'
@@ -41,8 +63,13 @@ class Video(object):
 
 
     def get_statistics(self):
-        '''
-        TODO string
+        '''the funcction to get statistics from video id
+        Parameters
+        ----------
+        None
+        Returns
+        -------
+        None
         '''
         statistics = youtube.videos().list(part = 'statistics',
                         id = self.video_id).\
@@ -66,8 +93,13 @@ class Video(object):
 
 
     def to_json(self):
-        '''
-        TODO string
+        '''convert the object to python dictionary object
+        Parameters
+        ----------
+        None
+        Returns
+        -------
+        dict
         '''
         return {'video_id': self.video_id,
                 'title': self.title,
@@ -80,5 +112,4 @@ class Video(object):
                 'commentCount': self.commentCount,
                 'image': self.image,
                 'url': self.url}
-
 

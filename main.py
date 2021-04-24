@@ -25,11 +25,11 @@ def start_app():
 def show_recipes():
     keywords = request.form.get('keywords')
     cuisineType = request.form.get('cuisineType')
-    params = {"q": keywords, 
+    params = {"q": keywords,
             "cuisineType": cuisineType}
     recipe_results = utils.make_request_with_cache(params)
     return render_template('recipes.html', recipe_results=recipe_results,
-                            size=len(recipe_results), 
+                            size=len(recipe_results),
                             keywords=keywords, cuisineType=cuisineType)
 
 
@@ -40,10 +40,10 @@ def show_youtube_videos():
     recipe_id = request.form.get(f'recipe_id_{recipe_no}')
     keywords = request.form.get('keywords')
     cuisineType = request.form.get('cuisineType')
-    youtube_results = utils.make_youtube_request_with_cache(recipe_name, 
+    youtube_results = utils.make_youtube_request_with_cache(recipe_name,
                                                             recipe_id)
-    return render_template('video.html', youtube_results=youtube_results, 
-                            recipe_id=recipe_id, 
+    return render_template('video.html', youtube_results=youtube_results,
+                            recipe_id=recipe_id,
                             recipe_name=recipe_name,
                             keywords=keywords, cuisineType=cuisineType)
 
@@ -51,7 +51,7 @@ def show_youtube_videos():
 @app.route('/history', methods=["GET", "POST"])
 def show_recipe_history():
     history_results = utils.make_history()
-    return render_template('history.html', 
+    return render_template('history.html',
                                 history_results=history_results,
                                 size=len(history_results))
 
@@ -63,11 +63,11 @@ def show_video_history():
     recipe_id = request.form.get(f'recipe_id_{recipe_no}')
     keywords = request.form.get('keywords')
     cuisineType = request.form.get('cuisineType')
-    youtube_results = utils.make_youtube_request_with_cache(recipe_name, 
+    youtube_results = utils.make_youtube_request_with_cache(recipe_name,
                                                             recipe_id)
-    return render_template('video_hist.html', 
-                            youtube_results=youtube_results, 
-                            recipe_id=recipe_id, 
+    return render_template('video_hist.html',
+                            youtube_results=youtube_results,
+                            recipe_id=recipe_id,
                             recipe_name=recipe_name,
                             keywords=keywords, cuisineType=cuisineType)
 
