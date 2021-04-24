@@ -15,6 +15,7 @@ class Recipe(object):
             self.totalDaily = recipe['recipe']['totalDaily']
             self.image = recipe['recipe']['image']
             self.file_name = self.recipe_id[self.recipe_id.find("#")+1:]
+
         elif recipe_result:
             self.recipe_id = recipe_result['recipe_id']
             self.url = recipe_result['url']
@@ -27,6 +28,7 @@ class Recipe(object):
             self.totalDaily = recipe_result['totalDaily']
             self.image = recipe_result['image']
             self.file_name = recipe_result['file_name']
+            
         else:
             self.recipe_id = 'no_id'
             self.url = 'no url'

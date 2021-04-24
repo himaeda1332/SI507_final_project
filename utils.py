@@ -116,7 +116,8 @@ def make_request(params):
         a list
     '''
 
-    search_url = BASE_URL + "?q=" + params["q"] + "&app_id=" + API_ID + "&app_key=" + API_KEY
+    search_url = BASE_URL + "?q=" + params["q"] +\
+            "&app_id=" + API_ID + "&app_key=" + API_KEY
     if 'cuisineType' in params.keys():
         search_url += f"&cuisineType={params['cuisineType']}"
     response = requests.get(search_url).json()
@@ -145,14 +146,6 @@ def make_request_with_cache(params):
     '''
     CACHE_DICT = load_cache(source='recipe')
     request_key = construct_unique_key(params)
-    # conn = sqlite3.connect(DB_NAME)
-    # cur = conn.cursor()
-
-    # query = f"SELECT * FROM recipes WHERE request_key = {request_key}"
-    # try:
-    #     result = cur.execute(query).fetchall()
-    # except sqlite3.OperationalError:
-    #     pass
     if request_key in CACHE_DICT.keys():
         print("fetching cached data")
         return CACHE_DICT[request_key]
@@ -340,8 +333,8 @@ def save2sqlite():
             for i, ingredient in enumerate(recipe['ingredient']):
                 
                 insert_into_ingredient = f'''
-                    insert into ingredients values('{recipe['recipe_id']}', {i},
-                    '{ingredient}')
+                    insert into ingredients values('{recipe['recipe_id']}', 
+                    {i}, '{ingredient}')
                 '''
                 try:
                     cur.execute(insert_into_ingredient)
@@ -413,7 +406,7 @@ def make_history():
             SELECT * from ingredients 
                 where recipe_id = "{recipe_id}"
             '''
-        ingredients = cur.execute(query_recipe).fetchall()
+        ingredients = cur.execute(query_ingredient).fetchall()
         ingredient_list = []
         for ingredient in ingredients:
             ingredient_list.append(ingredient[2])
@@ -428,7 +421,7 @@ def make_history():
             nutrient_dict[str(i)] = {"label": nutrient[2],
                                         "quantity": nutrient[3],
                                         "unit": "%"}
-        temp_recipe.ingredient = nutrient_dict
+        temp_recipe.totalDaily = nutrient_dict
         recipe_history.append(temp_recipe.to_json())
         
     return recipe_history

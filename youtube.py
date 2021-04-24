@@ -17,6 +17,7 @@ class Video(object):
             self.title = json['snippet']['title']
             self.image = json['snippet']['thumbnails']['default']['url']
             self.url = "https://www.youtube.com/watch?v=" + self.video_id
+
         elif result:
             self.video_id = result['video_id']
             self.channel_title = result['channel_title']
@@ -29,6 +30,7 @@ class Video(object):
             self.commentCount = result['commentCount']
             self.image = result['image']
             self.url = result['url']
+            
         else:
             self.video_id = 'no_id'
             self.channel_title = 'no title'
@@ -42,7 +44,7 @@ class Video(object):
         '''
         TODO string
         '''
-        statistics = youtube.videos().list(part = 'statistics', 
+        statistics = youtube.videos().list(part = 'statistics',
                         id = self.video_id).\
                             execute()['items'][0]['statistics']
         try:
@@ -61,12 +63,13 @@ class Video(object):
             self.commentCount = statistics['commentCount']
         except KeyError:
             self.commentCount = 0
-        
+
+
     def to_json(self):
         '''
         TODO string
         '''
-        return {'video_id': self.video_id, 
+        return {'video_id': self.video_id,
                 'title': self.title,
                 'published': self.published,
                 'channel_id': self.channel_id,
