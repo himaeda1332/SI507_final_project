@@ -1,6 +1,7 @@
 # SI507_final_project
 ## 1. Libraries (not python standard library)
 * [flask](https://flask.palletsprojects.com/en/1.1.x/): For making user interface
+* [flask-bootstrap](https://github.com/mbr/flask-bootstrap): Extension of flask to use Bootstrap package
 * [matplotlib](https://matplotlib.org): For making nutrients plot
 * [pandas](https://pandas.pydata.org): For preprocessing to make nutrients plot
 * [requests](https://docs.python-requests.org/en/master/): For fetching data through API
@@ -8,7 +9,7 @@
 * [google-api-python-client](https://github.com/googleapis/google-api-python-client): For using YouTube API  
 ### Installation
 ```shell
-$ pip install flask matplotlib pandas requests seaborn
+$ pip install flask Flask-Bootstrap matplotlib pandas requests seaborn
 $ pip install google-api-python-client
 ```
 
