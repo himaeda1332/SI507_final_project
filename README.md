@@ -1,12 +1,14 @@
 # SI507_final_project
 ## 1. Libraries (not python standard library)
+* [flask](https://flask.palletsprojects.com/en/1.1.x/): For making user interface
 * [matplotlib](https://matplotlib.org): For making nutrients plot
-* [seaborn](https://seaborn.pydata.org): For making nutrients plot
 * [pandas](https://pandas.pydata.org): For preprocessing to make nutrients plot
+* [requests](https://docs.python-requests.org/en/master/): For fetching data through API
+* [seaborn](https://seaborn.pydata.org): For making nutrients plot
 * [google-api-python-client](https://github.com/googleapis/google-api-python-client): For using YouTube API  
-- Installation of google-api-python-client  
+### Installation
 ```shell
-$ pip install matplotlib seaborn pandas
+$ pip install flask matplotlib pandas requests seaborn
 $ pip install google-api-python-client
 ```
 
@@ -20,9 +22,9 @@ You can retrieve 2.3+ million nutritionally analyzed recipes.
 ### 2. YouTube
 * [YouTube Data API](https://developers.google.com/youtube/v3)  
 To use this API, you need to create Google account at first, then you can create your API key on Google Cloud Platform.  
-This [blog](https://blog.hubspot.com/website/how-to-get-youtube-api-key) is also helpful.  
+[This blog](https://blog.hubspot.com/website/how-to-get-youtube-api-key) is also helpful.  
 
-### 3. How to use this application
+## 3. How to use
 You run the below code  
 ```shell
 $ python main.py

@@ -1,14 +1,14 @@
 import requests
 import json
+import sqlite3
+import datetime
 
 from googleapiclient.discovery import build
-import sqlite3
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import datetime
 
 import secrets
 from recipe import Recipe
@@ -161,7 +161,8 @@ def make_request_with_cache(params):
 
 
 def create_plot(response):
-    '''Create plot to show nutrients of each cuisine.
+    '''Create plot to show top 5 nutrients rate of each cuisine
+    required per day.
     This function uses list of recipe objects, then it creates
     plot by using recipe's file name attribute.
 
