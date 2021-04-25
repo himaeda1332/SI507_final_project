@@ -57,10 +57,13 @@ def load_cache(source='recipe'):
 
 def save_cache(cache, source='recipe'):
     ''' saves the current state of the cache to disk
+    according to the source
     Parameters
     ----------
     cache_dict: dict
         The dictionary to save
+    source: string
+        Source name (e.c. recipe or youtube)
 
     Returns
     -------
@@ -118,12 +121,11 @@ def make_request(params):
     '''
 
     search_url = BASE_URL + "?q=" + params["q"] +\
-            "&app_id=" + API_ID + "&app_key=" + API_KEY
-    if 'cuisineType' in params.keys():
-        search_url += f"&cuisineType={params['cuisineType']}"
+            "&app_id=" + API_ID + "&app_key=" + API_KEY +\
+                f"&cuisineType={params['cuisineType']}"
     response = requests.get(search_url).json()
     cache_list = []
-    for i, recipe_json in enumerate(response['hits']):
+    for recipe_json in response['hits']:
         recipe = Recipe(recipe_json)
         cache_list.append(recipe.to_json())
 
@@ -142,8 +144,7 @@ def make_request_with_cache(params):
     Returns
     -------
     list
-        the results of the query as a list loaded from cache
-        JSON
+        the results of the recipes as JSON format
     '''
     CACHE_DICT = load_cache(source='recipe')
     request_key = construct_unique_key(params)
@@ -160,8 +161,17 @@ def make_request_with_cache(params):
 
 
 def create_plot(response):
-    '''
-    TODO string
+    '''Create plot to show nutrients of each cuisine.
+    This function uses list of recipe objects, then it creates
+    plot by using recipe's file name attribute.
+
+    Parameters
+    ----------
+    response: list
+        List of Recipe objects
+    Returns
+    -------
+    None
     '''
     for recipe in response:
         label = []
@@ -184,7 +194,7 @@ def create_plot(response):
         plt.ylim((0, 100))
         plt.ioff()
         plt.savefig(f"./static/figures/{img_name}.png")
-        
+
 
 def get_youtube_data(keyword):
     '''Make a request to the Web API using the baseurl and params
@@ -228,7 +238,7 @@ def make_youtube_request_with_cache(keyword, recipe_id):
     keyword: string
         Keyword for query
     recipe_id: string
-        Keyword for query
+        recipe id used for request_key
     Returns
     -------
     list
@@ -250,9 +260,20 @@ def make_youtube_request_with_cache(keyword, recipe_id):
         save_cache(CACHE_YOUTUBE_DICT, source='youtube')
         return CACHE_YOUTUBE_DICT[request_key]
 
+
 def save2sqlite():
-    '''
-    TODO string
+    '''Create database about recipe and youtube vidoes which
+    user searched before.
+    The recipe information is splited into 3 tables called recipes,
+    ingredients and nutrients.
+    The youtube information is recorded in a table, which has recipe_id
+    as a foreign key.
+    Parameters
+    ----------
+    None
+    Returns
+    -------
+    None
     '''
     CACHE_DICT = load_cache(source='recipe')
     CACHE_YOUTUBE_DICT = load_cache(source='youtube')
@@ -271,7 +292,7 @@ def save2sqlite():
             "cuisinetype"   text    not null,
             "image"         text    not null,
             "file_name"     text    not null,
-            primary key(request_key, recipe_id)    
+            primary key(request_key, recipe_id)
         );
     '''
 
@@ -321,7 +342,7 @@ def save2sqlite():
         for recipe in recipe_dict:
             insert_into_recipe = f'''
                 insert into recipes values('{key}',
-                '{recipe['recipe_id']}', 
+                '{recipe['recipe_id']}',
                 "{recipe['recipe_name']}", "{recipe['url']}",
                 {recipe['calories']}, {recipe['servings']},
                 '{recipe['cuisineType']}', '{recipe['image']}',
@@ -332,9 +353,9 @@ def save2sqlite():
             except sqlite3.IntegrityError:
                 pass
             for i, ingredient in enumerate(recipe['ingredient']):
-                
+
                 insert_into_ingredient = f'''
-                    insert into ingredients values('{recipe['recipe_id']}', 
+                    insert into ingredients values('{recipe['recipe_id']}',
                     {i}, '{ingredient}')
                 '''
                 try:
@@ -344,52 +365,60 @@ def save2sqlite():
 
         for i, nutrient in enumerate(recipe['totalDaily'].values()):
             insert_into_nutrient = f'''
-                insert into nutrients values('{recipe['recipe_id']}', {i}, 
+                insert into nutrients values('{recipe['recipe_id']}', {i},
                 "{nutrient['label']}", {nutrient['quantity']})
             '''
             try:
                 cur.execute(insert_into_nutrient)
             except sqlite3.IntegrityError:
                 pass
-    
+
     for key, youtube_dict in CACHE_YOUTUBE_DICT.items():
         for youtube in youtube_dict:
             insert_into_youtube = f'''
                 insert into youtube values('{youtube['video_id']}',
                 "{youtube['title']}", '{youtube['published']}',
-                {youtube['viewCount']}, {youtube['likeCount']}, 
-                {youtube['dislikeCount']}, {youtube['commentCount']}, 
-                '{youtube['image']}', '{youtube['url']}', 
+                {youtube['viewCount']}, {youtube['likeCount']},
+                {youtube['dislikeCount']}, {youtube['commentCount']},
+                '{youtube['image']}', '{youtube['url']}',
                 '{key[10:]}', "{str(datetime.datetime.today())}")
             '''
             try:
                 cur.execute(insert_into_youtube)
             except sqlite3.IntegrityError:
                     pass
-    
+
     conn.commit()
     cur.close()
     conn.close()
 
-def make_history():
-    '''
-    TODO string
-    '''
 
+def make_history():
+    '''Retrieve last 10 recipe information from database.
+    recipe_id in the youtube table is used as a key, then
+    retrieve at most 10 recipe information from the database.
+    Parameters
+    ----------
+    None
+    Returns
+    -------
+    list:
+        the results of the recipes as JSON format
+    '''
     recipe_history = []
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
     query = '''
-            SELECT distinct recipe_id from 
-                    (select recipe_id, daytime 
-                        from youtube order by daytime desc) 
+            SELECT distinct recipe_id from
+                    (select recipe_id, daytime
+                        from youtube order by daytime desc)
                     limit 10
             '''
     result = cur.execute(query).fetchall()
     for fetch_id in result:
         recipe_id = fetch_id[0]
         query_recipe = f'''
-            SELECT * from recipes 
+            SELECT * from recipes
                 where recipe_id = "{recipe_id}"
             '''
         recipe = cur.execute(query_recipe).fetchall()
@@ -404,7 +433,7 @@ def make_history():
         temp_recipe.file_name = recipe[0][8]
 
         query_ingredient = f'''
-            SELECT * from ingredients 
+            SELECT * from ingredients
                 where recipe_id = "{recipe_id}"
             '''
         ingredients = cur.execute(query_ingredient).fetchall()
@@ -424,5 +453,6 @@ def make_history():
                                         "unit": "%"}
         temp_recipe.totalDaily = nutrient_dict
         recipe_history.append(temp_recipe.to_json())
-        
+
     return recipe_history
+
