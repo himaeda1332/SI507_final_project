@@ -357,7 +357,7 @@ def save2sqlite():
 
                 insert_into_ingredient = f'''
                     insert into ingredients values('{recipe['recipe_id']}',
-                    {i}, '{ingredient}')
+                    {i}, "{ingredient}"")
                 '''
                 try:
                     cur.execute(insert_into_ingredient)
