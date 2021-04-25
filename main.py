@@ -42,6 +42,7 @@ def show_youtube_videos():
     cuisineType = request.form.get('cuisineType')
     youtube_results = utils.make_youtube_request_with_cache(recipe_name,
                                                             recipe_id)
+    utils.save2sqlite()
     return render_template('video.html', youtube_results=youtube_results,
                             recipe_id=recipe_id,
                             recipe_name=recipe_name,

@@ -13,7 +13,7 @@ $ pip install google-api-python-client
 ```
 
 ## 2. API
-In this application, we used two API.
+In this application, we use two APIs.
 ### 1. EDAMAM
 * [Edamam recipe search API](https://developer.edamam.com/admin)  
 You can click the above link and need to sign up. Then, you can create your API key quickly.  
@@ -29,7 +29,7 @@ You run the below code
 ```shell
 $ python main.py
 ```
-1. User inputs keyword such as "beef tomato" and choose a cuisine type from the list such as "American" or "Japanese." Then, the app research recipes.  
+1. User input keywords such as "beef tomato" and choose a cuisine type from the list such as "American" or "Japanese." Then, the app searches recipes.  
 2. The app returns the search results and shows the information of the meal, such as ingredients and calories. Also, the app shows the figure of how much nutrients the meal contains.  
 3. When the user chooses a recipe which he/she wants to cook, the app searches related YouTube videos. User can choose a video and click it; then, it is shown on the new tab.  
 4. Users can look for their search history.
